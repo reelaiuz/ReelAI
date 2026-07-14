@@ -2,7 +2,7 @@
 async function searchVideos() {
   const query = document.getElementById('searchInput').value;
   const container = document.getElementById('videoContainer');
-  
+
   if (!query) {
     container.innerHTML = '<p>Iltimos, qidiruv so‘zini kiriting.</p>';
     return;
@@ -17,41 +17,32 @@ async function searchVideos() {
       return;
     }
 
-    // Video kartochkalarni yasash
     let html = '';
     data.videos.forEach(video => {
-      // 9:16 video faylni tanlash (eng yaxshisi birinchi video_files dan)
-      const bestVideo = video.video_files.find(file => file.quality === 'hd' && file.width === 720 && file.height === 1280) 
-                        || video.video_files.find(file => file.width === 720) 
-                        || video.video_files[0];
-      
+      const bestVideo = video.video_files.find(file => 
+        file.quality === 'hd' && file.width === 720 && file.height === 1280
+      ) || video.video_files.find(file => file.width === 720) || video.video_files[0];
+
       if (bestVideo) {
         html += `
           <div class="video-card">
-            <video src="${bestVideo.link}" controls></video>
+            <video src="${bestVideo.link}" controls width="100%"></video>
             <p>${video.user.name}</p>
-            <button onclick="downloadVideo('${bestVideo.link}')">Yuklab olish</button>
+            <button onclick="window.open('${bestVideo.link}', '_blank')">Yuklab olish</button>
           </div>
         `;
       }
     });
 
-    container.innerHTML = html;
+    container.innerHTML = html || '<p>Hech qanday video topilmadi.</p>';
   } catch (error) {
-    console.error(error);
     container.innerHTML = '<p>Serverga ulanishda xato.</p>';
+    console.error(error);
   }
 }
 
-// Yuklab olish funksiyasi (keyinchalik yaxshilaymiz)
-function downloadVideo(url) {
-  window.open(url, '_blank');
-}
-
-// Sahifa yuklangach qidiruv tugmasini tinglash
+// Sahifa yuklangach tugma ishlashini ta’minlash
 document.addEventListener('DOMContentLoaded', () => {
-  const searchBtn = document.getElementById('searchButton');
-  if (searchBtn) {
-    searchBtn.addEventListener('click', searchVideos);
-  }
+  const btn = document.getElementById('searchButton');
+  if (btn) btn.addEventListener('click', searchVideos);
 });
