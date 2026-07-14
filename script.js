@@ -1,4 +1,5 @@
 // Video qidirish funksiyasi
+// Video qidirish funksiyasi
 async function searchVideos() {
   const query = document.getElementById('searchInput').value;
   const container = document.getElementById('videoContainer');
